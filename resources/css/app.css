@@ -1,3 +1,57 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.bg-custom-dark {
+    background-color: #1e1f23;
+}
+
+.h-c-screen {
+    min-height: 95vh;
+}
+
+.bg-gray {
+    background-color: #32333869;
+}
+.bg-purple {
+    background-color: #5765ed;
+}
+.color-green {
+    color: #2bcc6f;
+}
+.color-white {
+    color: white;
+}
+
+.w-5 {
+    width: 5%;
+}
+.w-95 {
+    width: 95%;
+}
+.border-left-top-rounded {
+    border-top-left-radius: 15px;
+}
+
+.bg-chats {
+    background-color: #2e3036;
+}
+
+input:focus,
+input:active {
+    outline: none !important;
+    border: none !important;
+}
+
+.bg-sent {
+    background-color: #30d89d;
+    font-size: 14px;
+}
+
+.bg-recieved {
+    background-color: #5a6e6d;
+    font-size: 14px;
+}
+.bg-map{
+    background-color: #2C2C31;
+}
