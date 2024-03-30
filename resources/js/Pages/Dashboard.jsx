@@ -8,6 +8,8 @@ import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import Map from "./Map";
 import Chat from "./Chat";
 export default function Dashboard({ auth, messages, users, reciever }) {
+
+
     let [selected, setselected] = useState("chat");
     let [user_messages, setuser_messages] = useState(messages);
 
@@ -71,7 +73,7 @@ export default function Dashboard({ auth, messages, users, reciever }) {
                                 chats={user_messages}
                                 user={auth.user}
                                 users={users}
-                                reciever={reciever ? reciever[0] : null}
+                                receiver={reciever}
                                 setuser_messages={setuser_messages}
                             />
                         )}

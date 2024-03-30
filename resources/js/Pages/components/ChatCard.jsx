@@ -8,7 +8,7 @@ export default function ChatCard({ user, setcurrentuser }) {
                 className="col-12 p-2 d-flex cursor-pointer"
                 onClick={() => {
                     setcurrentuser(user);
-                    router.get(`/dashboard/${user.id}`);
+                    router.get(`/messages/${user.id}`);
                 }}
             >
                 <div className="col-3 d-flex justify-content-center align-items-center">

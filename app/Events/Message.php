@@ -19,13 +19,11 @@ class Message implements ShouldBroadcast
      */
 
     public $message;
-    public $sender;
     public $reciever;
 
-    public function __construct($message, $sender, $reciever)
+    public function __construct($message, $reciever)
     {
         $this->message = $message;
-        $this->sender = $sender;
         $this->reciever = $reciever;
     }
 
@@ -36,7 +34,6 @@ class Message implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        return [new PrivateChannel('task-wise360.1.2')];
-        // return [new PrivateChannel('task-wise360.'.$this->sender.'.'.$this->reciever)];
+        return [new PrivateChannel('task-wise360.'.$this->reciever)];
     }
 }

@@ -14,7 +14,13 @@ window.Echo = new Echo({
     forceTLS: true,
 });
 
-export default function Chat({ chats, user, users, reciever,setuser_messages }) {
+export default function Chat({
+    chats,
+    user,
+    users,
+    receiver,
+    setuser_messages,
+}) {
     let [messages, setmessages] = useState(chats);
     let [messagetosend, setmessagetosend] = useState("");
     const messagesContainerRef = useRef(null);
@@ -22,17 +28,14 @@ export default function Chat({ chats, user, users, reciever,setuser_messages }) 
     let [currentuser, setcurrentuser] = useState(null);
 
     useEffect(() => {
-        // Scroll to the bottom of the container once the messages are updated
         if (messagesContainerRef.current) {
             messagesContainerRef.current.scrollTop =
                 messagesContainerRef.current.scrollHeight;
         }
     }, [messages]);
 
-    var reciever_id = reciever ? reciever.id : 0;
-
-    var channel = window.Echo.private(`task-wise360.1.2`);
-    // var channel = window.Echo.private(`task-wise360.${user.id}.${reciever_id}`);
+    var receiver_id = receiver ? receiver.id : 0;
+    var channel = window.Echo.private(`task-wise360.${user.id}`);
 
     channel.listen("Message", function (data) {
         setmessages(data.message);
@@ -41,15 +44,33 @@ export default function Chat({ chats, user, users, reciever,setuser_messages }) 
 
     function sendchat() {
         if (messagetosend != "") {
+            const formData = new FormData();
+            formData.append("message", messagetosend);
+            formData.append("sender_id", user.id);
+            formData.append("receiver_id", receiver.id);
+
             const response = axios
-                .post("/api/store", {
-                    message: messagetosend,
-                    sender_id: user.id,
-                    receiver_id: reciever.id,
-                })
+                .post("/api/messages", formData)
                 .then((response) => {
-                    // console.log(response.data.result);
+                    if (response.status >= 200 && response.status < 300) {
+                        return response.data;
+                    } else {
+                        throw new Error(
+                            "Request failed with status " + response.status
+                        );
+                    }
+                })
+                .then((data) => {
+                    setmessages(data.result);
+                    setuser_messages(data.result);
+                })
+                .catch((error) => {
+                    console.error(
+                        "There was a problem with the axios request:",
+                        error
+                    );
                 });
+
             setmessagetosend("");
         }
     }
@@ -64,10 +85,11 @@ export default function Chat({ chats, user, users, reciever,setuser_messages }) 
                         </p>
                     </div>
                     <div>
-                        {users?.map((item) => {
+                        {users?.map((item, index) => {
                             if (item.id != user.id) {
                                 return (
                                     <ChatCard
+                                        key={index}
                                         user={item}
                                         setcurrentuser={setcurrentuser}
                                     />
@@ -78,14 +100,14 @@ export default function Chat({ chats, user, users, reciever,setuser_messages }) 
                 </div>
 
                 <div className="col-8 col-md-9 col-lg-10 d-flex  flex-column">
-                    {reciever_id== 0 && (
+                    {receiver_id == 0 && (
                         <div className="col-12 text-light d-flex flex-column flex-grow-1 align-items-center justify-content-center">
                             <p className="text-light">
                                 Send and recieve messages
                             </p>
                         </div>
                     )}
-                    {reciever_id!=0 && (
+                    {receiver_id != 0 && (
                         <>
                             <div className="d-flex p-2 bg-chats ">
                                 <div className="d-flex  justify-content-center align-items-center">
@@ -97,14 +119,14 @@ export default function Chat({ chats, user, users, reciever,setuser_messages }) 
                                         htmlFor=""
                                         className="  form-label text-light p-0 m-0"
                                     >
-                                        {reciever?.name}
+                                        {receiver?.name}
                                     </label>
                                 </div>
                             </div>
 
                             <div className="col-12 text-light d-flex flex-column flex-grow-1">
                                 <div
-                                    class="d-flex flex-grow-1 flex-column p-2 overflow-auto"
+                                    className="d-flex flex-grow-1 flex-column p-2 overflow-auto"
                                     style={{
                                         maxHeight: "80vh",
                                         scrollbarWidth: "none",
@@ -115,7 +137,7 @@ export default function Chat({ chats, user, users, reciever,setuser_messages }) 
                                         return (
                                             <>
                                                 <div
-                                                    class={`d-flex  justify-content-${
+                                                    className={`d-flex  justify-content-${
                                                         item.sender_id ==
                                                         user.id
                                                             ? "end"
@@ -124,7 +146,7 @@ export default function Chat({ chats, user, users, reciever,setuser_messages }) 
                                                     key={index}
                                                 >
                                                     <p
-                                                        class={`p-2 px-4 rounded bg-${
+                                                        className={`p-2 px-4 rounded bg-${
                                                             item.sender_id ==
                                                             user.id
                                                                 ? "recieved"
